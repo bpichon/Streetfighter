@@ -22,10 +22,16 @@ local Attacks = {
     MiddleKick=14,
     HighKick=15,
     MoveToOpponent=16,
-    Delay=17
+    MoveFromOpponent=17,
+    Delay=18
 }
 
-
+local States = {
+  Init = 1,
+  MoveToOpponent = 2,
+  Attack = 3,
+  RunAway = 4
+}
 ---------------------------------------------------------------------------------------------------
 -- SIMPLE environment
 ---------------------------------------------------------------------------------------------------
@@ -86,6 +92,8 @@ function Example.new(player)
    local self = Player.new(player)
    file = io.open("c:\\temp\\streetfighter.txt", "a")
    self.i = 0
+   self.currentState = States.Init
+   
    setmetatable(self, Example_mt)
 
    self.fktTable = {
@@ -107,14 +115,13 @@ function Example.new(player)
      {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent}
    }
 
-   self.currentStateIndex = Attacks.MiddlePunch
-
    SimpleReset()
 
    return self
 end
 
 function Example:startRound()
+  self.currentState = States.Init
   self.currentActionsIndex = 1
   self.actionArray = { Attacks.MoveToOpponent,
                        Attacks.Delay,
@@ -146,6 +153,58 @@ function Example:startRound()
                        Attacks.Delay,
                        Attacks.HighKick,
                        Attacks.Delay  }
+end
+
+function Example:stateTransition(me) 
+
+  local result
+  local nextState = nil
+
+  --print("a")
+
+  --print("cs " .. self.currentState)
+  if self.currentState == States.Init then
+    nextState = States.MoveToOpponent
+    --print("b")
+  elseif self.currentState == States.MoveToOpponent then
+    --print("Move")
+    self.actionArray = {
+                    Attacks.MoveToOpponent,
+                    Attacks.Delay }
+    
+    f, result = self:performActions(me)
+    if f then 
+      -- state transition
+      nextState = States.Attack
+    end
+  elseif self.currentState == States.Attack then
+    --print("att")
+    self.actionArray = {Attacks.HighKick, Attacks.Delay, Attacks.LowerKick, Attacks.Delay, Attacks.MiddleKick, Attacks.Delay}
+    
+    f, result = self:performActions(me)
+    if f then 
+      -- state transition
+      nextState = States.RunAway
+    end
+  elseif self.currentState == States.RunAway then
+    --print("run")
+    self.actionArray = {Attacks.MoveFromOpponent, Attacks.Delay}
+    
+    f, result = self:performActions(me)
+    if f then 
+      -- state transition
+      nextState = States.MoveToOpponent
+    end
+  else 
+    print("err ".. self.currentState)
+  end
+
+  if nextState ~= nil then 
+    self.currentState = nextState
+  end
+  
+  return result
+
 end
 
 function Example:log(me, enemy)
@@ -182,7 +241,7 @@ function Example:log(me, enemy)
   SimpleSetSignal("enemy.remoteAttack", enemy["remoteAttack"])
   SimpleSetSignal("enemy.remoteAttackPos", enemy["remoteAttackPos"])
   SimpleSetSignal("enemy.dizzy", enemy["dizzy"])
-  SimpleSetSignal("currentStateIndex", self.currentActionsIndex)
+  SimpleSetSignal("currentStateIndex", self.currentState)
 	SimpleSchedule(1)
 end
 
@@ -192,8 +251,8 @@ end
 function Example:advance(me, enemy)
   self:log(me, enemy)
 
-  result = self:performActions(me)
-
+  --f, result = self:performActions(me)
+  self:stateTransition(me)
   self.i = self.i + 1
 
   return result
@@ -208,11 +267,11 @@ function Example:performActions(me)
     self.currentActionsIndex = self.currentActionsIndex + 1
 
     if self.currentActionsIndex > table.getn(self.actionArray) then
-      self.actionArray= {}
+      return true, result
     end
   end
 
-  return result
+  return false, result
 end
 
 function Example:performCurrentAction(currentActionIndex, me)
@@ -251,8 +310,10 @@ function Example:performCurrentAction(currentActionIndex, me)
       finished, result = self:MiddleKick(me)
   elseif self.currentStateIndex == Attacks.HighKick then
       finished, result = self:HighKick(me)
-  elseif self.currentStateIndex == Attacks.MoveToOpponent then
+    elseif self.currentStateIndex == Attacks.MoveToOpponent then
       finished, result = self:MoveToOpponent(me)
+    elseif self.currentStateIndex == Attacks.MoveFromOpponent then
+      finished, result = self:MoveFromOpponent(me)
   elseif self.currentStateIndex == Attacks.Delay then
       finished, result = self:Delay(me)
   end
@@ -317,6 +378,16 @@ end
 function Example:MoveToOpponent(me)
   local result = {}
   if me["distanceToOpponent"] >= 20 then
+    result[self:forward(me)] = true
+    result["Up"] = true
+    return false, result
+  end
+  return true, result
+end
+
+function Example:MoveFromOpponent(me)
+  local result = {}
+  if me["distanceToOpponent"] <= 200 then --TODO: Endlos-Gefahr
     result[self:forward(me)] = true
     result["Up"] = true
     return false, result
