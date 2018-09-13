@@ -156,9 +156,8 @@ function Example:startRound()
 end
 
 function Example:stateTransition(me) 
-
-  local result
   local nextState = nil
+  local result = {}
 
   --print("a")
 
@@ -169,8 +168,9 @@ function Example:stateTransition(me)
   elseif self.currentState == States.MoveToOpponent then
     --print("Move")
     self.actionArray = {
-                    Attacks.MoveToOpponent,
-                    Attacks.Delay }
+                    Attacks.MoveToOpponent
+                    --Attacks.Delay
+                   }
     
     f, result = self:performActions(me)
     if f then 
@@ -180,7 +180,7 @@ function Example:stateTransition(me)
   elseif self.currentState == States.Attack then
     --print("att")
     self.actionArray = {Attacks.HighKick, Attacks.Delay, Attacks.LowerKick, Attacks.Delay, Attacks.MiddleKick, Attacks.Delay}
-    
+        
     f, result = self:performActions(me)
     if f then 
       -- state transition
@@ -189,6 +189,7 @@ function Example:stateTransition(me)
   elseif self.currentState == States.RunAway then
     --print("run")
     self.actionArray = {Attacks.MoveFromOpponent, Attacks.Delay}
+    
     
     f, result = self:performActions(me)
     if f then 
@@ -252,9 +253,10 @@ function Example:advance(me, enemy)
   self:log(me, enemy)
 
   --f, result = self:performActions(me)
-  self:stateTransition(me)
+  result = self:stateTransition(me)
   self.i = self.i + 1
 
+  --print(result)
   return result
 end
 
@@ -267,6 +269,7 @@ function Example:performActions(me)
     self.currentActionsIndex = self.currentActionsIndex + 1
 
     if self.currentActionsIndex > table.getn(self.actionArray) then
+      self.currentActionsIndex = 1
       return true, result
     end
   end
@@ -377,7 +380,8 @@ end
 
 function Example:MoveToOpponent(me)
   local result = {}
-  if me["distanceToOpponent"] >= 20 then
+  --print("move to opp")
+  if me["distanceToOpponent"] >= 40 then
     result[self:forward(me)] = true
     result["Up"] = true
     return false, result
@@ -387,11 +391,11 @@ end
 
 function Example:MoveFromOpponent(me)
   local result = {}
-  if me["distanceToOpponent"] <= 200 then --TODO: Endlos-Gefahr
+  if self.i < 10 then
     result[self:forward(me)] = true
     result["Up"] = true
     return false, result
-  end
+  end  
   return true, result
 end
 
