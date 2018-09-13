@@ -5,6 +5,24 @@ setmetatable(Example, {__index = Player})
 local Example_mt = {__index = Example}
 local file
 
+local Attacks = {
+    JudoThrow=0,
+    DragonSuplex=1,
+    FlyingMare=2,
+    FlyingBusterDrop=3,
+    KneeBazooka=4,
+    ReverseSpinKick=5,
+    SpinningBackKnuckle=6,
+    SonicBoom=7,
+    SomersaultKick=8,
+    LowerPunch=9,
+    MiddlePunch=10,
+    HighPunch=11,
+    LowerKick=12,
+    MiddleKick=13,
+    HighKick=14
+}
+
 ---------------------------------------------------------------------------------------------------
 -- SIMPLE environment
 ---------------------------------------------------------------------------------------------------
