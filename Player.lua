@@ -24,6 +24,7 @@ end
 -- send set signal command
 --
 function SimpleSetSignal(name, value)
+  --print(name, value)
 	lvalue = value
 
 	if value == true then
@@ -86,7 +87,15 @@ function Example:log()
 	SimpleSetSignal("me.jumping", me["jumping"])
 	SimpleSetSignal("me.facingRight", me["facingRight"])
 	SimpleSetSignal("me.advancing", me["advancing"])
-	SimpleSetSignal("me.goingBack", me["goingBack"])
+  SimpleSetSignal("me.goingBack", me["goingBack"])
+  SimpleSetSignal("me.attacking", me["attacking"])
+  SimpleSetSignal("me.magic", me["magic"])
+  --SimpleSetSignal("me.attack", me["attak"])
+  SimpleSetSignal("me.thrown", me["thrown"])
+  SimpleSetSignal("me.blockOrHit", me["blockOrHit"])
+  SimpleSetSignal("me.remoteAttack", me["remoteAttack"])
+  SimpleSetSignal("me.remoteAttackPos", me["remoteAttackPos"])
+  SimpleSetSignal("me.dizzy", me["dizzy"])
 	SimpleSetSignal("enemy.x", enemy["x"])
 	SimpleSetSignal("enemy.y", enemy["y"])
 	SimpleSetSignal("enemy.distanceToOpponent", enemy["distanceToOpponent"])
@@ -95,6 +104,14 @@ function Example:log()
 	SimpleSetSignal("enemy.facingRight", enemy["facingRight"])
 	SimpleSetSignal("enemy.advancing", enemy["advancing"])
 	SimpleSetSignal("enemy.goingBack", enemy["goingBack"])
+  SimpleSetSignal("enemy.attacking", enemy["attacking"])
+  SimpleSetSignal("enemy.magic", enemy["magic"])
+  --SimpleSetSignal("enemy.attack", enemy["attak"])
+  SimpleSetSignal("enemy.thrown", enemy["thrown"])
+  SimpleSetSignal("enemy.blockOrHit", enemy["blockOrHit"])
+  SimpleSetSignal("enemy.remoteAttack", enemy["remoteAttack"])
+  SimpleSetSignal("enemy.remoteAttackPos", enemy["remoteAttackPos"])
+  SimpleSetSignal("enemy.dizzy", enemy["dizzy"])
 	SimpleSchedule(1)
 end
 
