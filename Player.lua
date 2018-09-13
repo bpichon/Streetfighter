@@ -307,14 +307,14 @@ function Example:FlyingMare(me) -- AIR close
 end
 
 -- condition: "close" && "air"
-function Example:flyingBusterDrop()
+function Example:flyingBusterDrop(me)
   local result = {}
   result["Down"] = true
   result["B"] = true
   return result
 end
 
-function Example:kneeBazooka()
+function Example:kneeBazooka(me)
   local result = {}
   result["Left"] = true --or Right
   result["B"] = true
@@ -322,7 +322,7 @@ function Example:kneeBazooka()
 end
 
 -- consition: "close"
-function Example:reverseSpinKick()
+function Example:reverseSpinKick(me)
   local result = {}
   result["Left"] = true --or Right
   result["C"] = true
