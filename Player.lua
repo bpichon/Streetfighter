@@ -77,8 +77,8 @@ end
 function Example:startRound()
 end
 
-function Example:advance(me, enemy)
-	SimpleSetSignal("self.i", self.i)
+function Example:log()
+  SimpleSetSignal("self.i", self.i)
 	SimpleSetSignal("me.x", me["x"])
 	SimpleSetSignal("me.y", me["y"])
 	SimpleSetSignal("me.distanceToOpponent", me["distanceToOpponent"])
@@ -96,6 +96,10 @@ function Example:advance(me, enemy)
 	SimpleSetSignal("enemy.advancing", enemy["advancing"])
 	SimpleSetSignal("enemy.goingBack", enemy["goingBack"])
 	SimpleSchedule(1)
+end
+
+function Example:advance(me, enemy)
+  self.log()
 
   -- called every frame
   if me["distanceToOpponent"] > 0 then
