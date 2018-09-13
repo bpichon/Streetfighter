@@ -450,6 +450,7 @@ function Example:FlyingBusterDrop(me)
       result["B"] = true
     else
         finished = true
+    end
     return finished, result
 end
 
@@ -462,6 +463,7 @@ function Example:KneeBazooka(me)
         result["B"] = true
     else
         finished = true
+    end
     return finished, result
 end
 
@@ -475,6 +477,7 @@ function Example:ReverseSpinKick(me)
         result["C"] = true
     else
         finished = true
+    end
     return finished, result
 end
 
