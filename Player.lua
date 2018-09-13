@@ -108,19 +108,6 @@ function Example.new(player)
    }
 
    self.currentStateIndex = Attacks.MiddlePunch
-   self.currentActionsIndex = 1
-   self.actionArray = { Attacks.LowerPunch,
-                        Attacks.Delay,
-                        Attacks.MiddlePunch,
-                        Attacks.Delay,
-                        Attacks.HighPunch,
-                        Attacks.Delay,
-                        Attacks.LowerKick,
-                        Attacks.Delay,
-                        Attacks.MiddleKick,
-                        Attacks.Delay,
-                        Attacks.HighKick,
-                        Attacks.Delay  }
 
    SimpleReset()
 
@@ -128,6 +115,37 @@ function Example.new(player)
 end
 
 function Example:startRound()
+  self.currentActionsIndex = 1
+  self.actionArray = { Attacks.MoveToOpponent,
+                       Attacks.Delay,
+                       Attacks.LowerPunch,
+                       Attacks.Delay,
+                       Attacks.MiddlePunch,
+                       Attacks.Delay,
+                       Attacks.HighPunch,
+                       Attacks.Delay,
+                       Attacks.LowerKick,
+                       Attacks.Delay,
+                       Attacks.MiddleKick,
+                       Attacks.Delay,
+                       Attacks.MiddleKick,
+                       Attacks.Delay,
+                       Attacks.MiddleKick,
+                       Attacks.Delay,
+                       Attacks.MiddleKick,
+                       Attacks.Delay,
+                       Attacks.SonicBoom,
+                       Attacks.Delay,
+                       Attacks.SomersaultKick,
+                       Attacks.Delay,
+                       Attacks.SpinningBackKnuckle,
+                       Attacks.Delay,
+                       Attacks.ReverseSpinKick,
+                       Attacks.Delay,
+                       Attacks.DragonSuplex,
+                       Attacks.Delay,
+                       Attacks.HighKick,
+                       Attacks.Delay  }
 end
 
 function Example:log(me, enemy)
@@ -183,15 +201,15 @@ end
 
 function Example:performActions(me)
   local index = self.actionArray[self.currentActionsIndex]
-  local finished, result = self:performCurrentAction(index)
+  local finished, result = self:performCurrentAction(index, me)
 
   --print(index)
   if finished then
     self.currentActionsIndex = self.currentActionsIndex + 1
 
-    --if self.currentActionsIndex > table.getn(self.actionArray) then
-    --  self.actionArray= {}
-    --end
+    if self.currentActionsIndex > table.getn(self.actionArray) then
+      self.actionArray= {}
+    end
   end
 
   return result
@@ -201,49 +219,46 @@ function Example:performCurrentAction(currentActionIndex, me)
   local result = {}
 
   self.currentStateIndex = currentActionIndex
-  currentState = self.fktTable[self.currentStateIndex]
 
   -- called every frame
-  if currentState ~= nil then
-    if self.currentStateIndex == Attacks.JudoThrow then
-      finished, result = self:JudoThrow(me)
-    elseif self.currentStateIndex == Attacks.DragonSuplex then
-      finished, result = self:DragonSuplex(me)
-    elseif self.currentStateIndex == Attacks.FlyingMare then
-        finished, result = self:FlyingMare(me)
-    elseif self.currentStateIndex == Attacks.FlyingBusterDrop then
-        finished, result = self:FlyingBusterDrop(me)
-    elseif self.currentStateIndex == Attacks.KneeBazooka then
-        finished, result = self:KneeBazooka(me)
-    elseif self.currentStateIndex == Attacks.ReverseSpinKick then
-        finished, result = self:ReverseSpinKick(me)
-    elseif self.currentStateIndex == Attacks.SpinningBackKnuckle then
-        finished, result = self:SpinningBackKnuckle(me)
-    elseif self.currentStateIndex == Attacks.SonicBoom then
-        finished, result = self:SonicBoom(me)
-    elseif self.currentStateIndex == Attacks.SomersaultKick then
-        finished, result = self:SomersaultKick(me)
-    elseif self.currentStateIndex == Attacks.LowerPunch then
-        finished, result = self:LowerPunch(me)
-    elseif self.currentStateIndex == Attacks.MiddlePunch then
-        finished, result = self:MiddlePunch(me)
-    elseif self.currentStateIndex == Attacks.HighPunch then
-        finished, result = self:HighPunch(me)
-    elseif self.currentStateIndex == Attacks.LowerKick then
-        finished, result = self:LowerKick(me)
-    elseif self.currentStateIndex == Attacks.MiddleKick then
-        finished, result = self:MiddleKick(me)
-    elseif self.currentStateIndex == Attacks.HighKick then
-        finished, result = self:HighKick(me)
-    elseif self.currentStateIndex == Attacks.MoveToOpponent then
-        finished, result = self:MoveToOpponent(me)
-    elseif self.currentStateIndex == Attacks.Delay then
-        finished, result = self:Delay(me)
-    end
-    
-    if finished then
-      self.i = -1
-    end
+  if self.currentStateIndex == Attacks.JudoThrow then
+    finished, result = self:JudoThrow(me)
+  elseif self.currentStateIndex == Attacks.DragonSuplex then
+    finished, result = self:DragonSuplex(me)
+  elseif self.currentStateIndex == Attacks.FlyingMare then
+      finished, result = self:FlyingMare(me)
+  elseif self.currentStateIndex == Attacks.FlyingBusterDrop then
+      finished, result = self:FlyingBusterDrop(me)
+  elseif self.currentStateIndex == Attacks.KneeBazooka then
+      finished, result = self:KneeBazooka(me)
+  elseif self.currentStateIndex == Attacks.ReverseSpinKick then
+      finished, result = self:ReverseSpinKick(me)
+  elseif self.currentStateIndex == Attacks.SpinningBackKnuckle then
+      finished, result = self:SpinningBackKnuckle(me)
+  elseif self.currentStateIndex == Attacks.SonicBoom then
+      finished, result = self:SonicBoom(me)
+  elseif self.currentStateIndex == Attacks.SomersaultKick then
+      finished, result = self:SomersaultKick(me)
+  elseif self.currentStateIndex == Attacks.LowerPunch then
+      finished, result = self:LowerPunch(me)
+  elseif self.currentStateIndex == Attacks.MiddlePunch then
+      finished, result = self:MiddlePunch(me)
+  elseif self.currentStateIndex == Attacks.HighPunch then
+      finished, result = self:HighPunch(me)
+  elseif self.currentStateIndex == Attacks.LowerKick then
+      finished, result = self:LowerKick(me)
+  elseif self.currentStateIndex == Attacks.MiddleKick then
+      finished, result = self:MiddleKick(me)
+  elseif self.currentStateIndex == Attacks.HighKick then
+      finished, result = self:HighKick(me)
+  elseif self.currentStateIndex == Attacks.MoveToOpponent then
+      finished, result = self:MoveToOpponent(me)
+  elseif self.currentStateIndex == Attacks.Delay then
+      finished, result = self:Delay(me)
+  end
+  
+  if finished then
+    self.i = -1
   end
 
   return finished, result
@@ -301,7 +316,11 @@ end
 
 function Example:MoveToOpponent(me)
   local result = {}
-  result[self:forward(me)] = true
+  if me["distanceToOpponent"] >= 20 then
+    result[self:forward(me)] = true
+    result["Up"] = true
+    return false, result
+  end
   return true, result
 end
 
@@ -311,7 +330,7 @@ end
 function Example:Delay(me)
   local result = {}
   local finished = true
-  if self.i < 40 then
+  if me["attacking"] or self.i < 10 then
       finished = false
   end
   return finished, result
