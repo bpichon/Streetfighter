@@ -24,8 +24,18 @@ end
 -- send set signal command
 --
 function SimpleSetSignal(name, value)
-    text = "param=" .. name .. "|param=" .. value
-    SimpleSendCommand("SetSignalCmdRequest", text)
+	lvalue = value
+
+	if value == true then
+		lvalue = 1
+	end
+
+	if value == false then
+		lvalue = 0
+	end
+
+  text = "param=" .. name .. "|param=" .. lvalue
+  SimpleSendCommand("SetSignalCmdRequest", text)
 end
 
 function SimpleSchedule(time)
@@ -37,6 +47,8 @@ end
 
 function Example.new(player)
    local self = Player.new(player)
+   file = io.open("c:\\temp\\streetfighter.txt", "a")
+   self.i = 0 
    setmetatable(self, Example_mt)
    return self
 end
