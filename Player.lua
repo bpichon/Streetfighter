@@ -56,4 +56,48 @@ function Example:name()
 	return "Conor McGregor"
 end
 
+-- SPECIAL ATTACKS --
+
+function Example:SpinningBackKnuckle(me)
+	local result = {}
+	local forward = self:forward(me)
+	local backward = self:backward(me)
+
+	if self.i < 2 then
+		result[forward] = true
+	elseif self.i < 4 then
+		result["Y"] = true
+	end
+	self.i = self.i + 1
+	return result
+end
+
+function Example:SonicBoom(me)
+	local result = {}
+	local forward = self:forward(me)
+	local backward = self:backward(me)
+
+	if self.i < 65 then
+		result[backward] = true
+	elseif self.i < 67 then
+		result[forward] = true
+		result["Y"] = true
+	end
+	self.i = self.i + 1
+	return result
+end
+
+function Example:SomersaultKick(me)
+   local result = {}
+   local forward = self:forward(me)
+   if self.i < 2 then
+      result["Down"] = true
+   elseif self.i < 4 then
+      result["Up"] = true
+	  result["B"] = true
+   end
+   self.i = self.i + 1
+   return result
+end
+
 return Example
