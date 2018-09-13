@@ -71,24 +71,26 @@ function Example.new(player)
    setmetatable(self, Example_mt)
 
    self.fktTable = {
+     {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent},
      {name="Judo Throw",            isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.JudoThrow},
      {name="Dragon Suplex",         isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.DragonSuplex},
      {name="Flying Mare",           isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingMare},
      {name="Flying Buster Drop",    isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingBusterDrop},
      {name="Knee Bazooka",          isMagic=false, maximalDistance=1, air=false,   close=false, call=self.KneeBazooka},
      {name="Reverse Spin Kick",     isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.ReverseSpinKick},
-     {name="Spinning Back Knuckle", isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SpinningBackKnuckle},
-     {name="Sonic Boom",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SonicBoom},
-     {name="Somersault Kick",       isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SomersaultKick},
+     {name="Spinning Back Knuckle", isMagic=false, maximalDistance=65, air=false,   close=false, call=self.SpinningBackKnuckle},
+     {name="Sonic Boom",            isMagic=false, maximalDistance=300, air=false,   close=false, call=self.SonicBoom},
+     {name="Somersault Kick",       isMagic=false, maximalDistance=75, air=false,   close=false, call=self.SomersaultKick},
 
-     {name="Lower Punch",           isMagic=false, maximalDistance=1, air=false,   close=false, call=self.LowerPunch},
-     {name="Middle Punch",          isMagic=false, maximalDistance=1, air=false,   close=false, call=self.MiddlePunch},
-     {name="High Punch",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.HighPunch},
-     {name="Lower Kick",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.LowerKick},
-     {name="Middle Kick",           isMagic=false, maximalDistance=1, air=false,   close=false, call=self.MiddleKick},
-     {name="High Kick",             isMagic=false, maximalDistance=1, air=false,   close=false, call=self.HighKick}
+     {name="Lower Punch",           isMagic=false, maximalDistance=55, air=false,   close=false, call=self.LowerPunch},
+     {name="Middle Punch",          isMagic=false, maximalDistance=60, air=false,   close=false, call=self.MiddlePunch},
+     {name="High Punch",            isMagic=false, maximalDistance=75, air=false,   close=false, call=self.HighPunch},
+     {name="Lower Kick",            isMagic=false, maximalDistance=55, air=false,   close=false, call=self.LowerKick},
+     {name="Middle Kick",           isMagic=false, maximalDistance=65, air=false,   close=false, call=self.MiddleKick},
+     {name="High Kick",             isMagic=false, maximalDistance=70, air=false,   close=false, call=self.HighKick}
    }
 
+   self.currentStateIndex = 8
 
    return self
 end
@@ -96,7 +98,7 @@ end
 function Example:startRound()
 end
 
-function Example:log()
+function Example:log(me, enemy)
   SimpleSetSignal("self.i", self.i)
 	SimpleSetSignal("me.x", me["x"])
 	SimpleSetSignal("me.y", me["y"])
@@ -134,14 +136,35 @@ function Example:log()
 end
 
 function Example:advance(me, enemy)
-  self.log()
+  self:log(me, enemy)
+
+  result = self:performCurrentAction(me)
+
+  self.i = self.i + 1
+
+  return result
+end
+
+function Example:performCurrentAction(me)
+  local result = {}
+
+  currentState = self.fktTable[self.currentStateIndex]
 
   -- called every frame
-  if me["distanceToOpponent"] > 0 then
-      return self:moveForward(me)
+  if currentState ~= nil then
+    if self.currentStateIndex == 1 then
+      finished, result = self:MoveToOpponent(me)
+    elseif self.currentStateIndex == 8 then
+      finished, result = currentState.call(me)
+    end
+    
+    if finished then
+      self.i = 0
+      self.currentStateIndex = 0
+    end
   end
 
-  return me
+  return result
 end
 
 function Example:fighter()
@@ -182,16 +205,22 @@ function Example:backward(me)
     return "Right"
 end
 
-function Example:moveBackward(me)
+function Example:MoveBackward(me)
     local result = {}
     result[self:backward(me)] = true
     return result
 end
 
-function Example:moveForward(me)
+function Example:MoveForward(me)
     local result = {}
     result[self:forward(me)] = true
     return result
+end
+
+function Example:MoveToOpponent(me)
+  local result = {}
+  result[self:forward(me)] = true
+  return true, result
 end
 
 
@@ -202,7 +231,6 @@ function Example:LowerPunch(me)
     if self.i < 2 then
         result["X"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -211,7 +239,6 @@ function Example:MiddlePunch(me)
     if self.i < 2 then
         result["Y"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -220,7 +247,6 @@ function Example:HighPunch(me)
     if self.i < 2 then
         result["Z"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -229,7 +255,6 @@ function Example:LowerKick(me)
     if self.i < 2 then
         result["A"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -238,7 +263,6 @@ function Example:MiddleKick(me)
     if self.i < 2 then
         result["B"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -247,7 +271,6 @@ function Example:HighKick(me)
     if self.i < 2 then
         result["C"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -264,7 +287,6 @@ function Example:SpinningBackKnuckle(me)
 	elseif self.i < 4 then
 		result["Y"] = true
 	end
-	self.i = self.i + 1
 	return result
 end
 
@@ -274,13 +296,15 @@ function Example:SonicBoom(me)
 	local backward = self:backward(me)
 
 	if self.i < 65 then
-		result[backward] = true
+    result[backward] = true
+    return false, result 
 	elseif self.i < 67 then
 		result[forward] = true
-		result["Y"] = true
+    result["Y"] = true
+    return false, result 
 	end
-	self.i = self.i + 1
-	return result
+  
+	return true, {}
 end
 
 function Example:SomersaultKick(me)
@@ -292,7 +316,6 @@ function Example:SomersaultKick(me)
       result["Up"] = true
 	  result["B"] = true
    end
-   self.i = self.i + 1
    return result
 end
 
@@ -308,7 +331,6 @@ function Example:JudoThrow(me) -- close
         end
         result["Y"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -324,7 +346,6 @@ function Example:DragonSuplex(me) -- close
         end
         result["Z"] = true
     end
-    self.i = self.i + 1
     return result
 end
 
@@ -337,7 +358,6 @@ function Example:FlyingMare(me) -- AIR close
         -- result["Y"] = true -- medium
         result["Z"] = true -- high
     end
-    self.i = self.i + 1
     return result
 end
 
