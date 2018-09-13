@@ -29,7 +29,12 @@ local Attacks = {
 -- SIMPLE environment
 ---------------------------------------------------------------------------------------------------
 function SimpleSendCommand(command, args)
-  text = "cmd=" .. command .. "|" .. args .. "\n"
+  if args == "" then
+    text = "cmd=" .. command .. "\n"
+  else
+    text = "cmd=" .. command .. "|" .. args .. "\n"
+  end
+
   --print (text)
 
 	--co = coroutine.create(function ()
@@ -56,12 +61,17 @@ function SimpleSetSignal(name, value)
 	end
 
   text = "param=" .. name .. "|param=" .. lvalue
+
   SimpleSendCommand("SetSignalCmdRequest", text)
 end
 
 function SimpleSchedule(time)
     text = "param=" .. time
     SimpleSendCommand("ScheduleCmdRequest", text)
+end
+
+function SimpleReset(time)
+  SimpleSendCommand("ResetCmdRequest", "")
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -91,7 +101,9 @@ function Example.new(player)
      {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent}
    }
 
-   self.currentStateIndex = Attacks.MoveToOpponent
+   self.currentStateIndex = Attacks.SonicBoom
+
+   SimpleReset()
 
    return self
 end
@@ -133,6 +145,7 @@ function Example:log(me, enemy)
   SimpleSetSignal("enemy.remoteAttack", enemy["remoteAttack"])
   SimpleSetSignal("enemy.remoteAttackPos", enemy["remoteAttackPos"])
   SimpleSetSignal("enemy.dizzy", enemy["dizzy"])
+  SimpleSetSignal("currentStateIndex", self.currentStateIndex)
 	SimpleSchedule(1)
 end
 
