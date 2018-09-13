@@ -46,6 +46,7 @@ end
 
 function Example:advance(me, enemy)
   -- called every frame
+    return me
 end
 
 function Example:fighter()
@@ -98,6 +99,51 @@ function Example:SomersaultKick(me)
    end
    self.i = self.i + 1
    return result
+end
+
+function Example:JudoThrow(me) -- close
+    local result = {}
+    local forward = self:forward(me)
+    local backward = self:backward(me)
+    if self.i < 2 then  -- forward/backward + medium punch
+        if (me.x < 250) then
+            result[backward] = true
+        else
+            result[forward] = true
+        end
+        result["Y"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:DragonSuplex(me) -- close
+    local result = {}
+    local forward = self:forward(me)
+    local backward = self:backward(me)
+    if self.i < 2 then  -- forward/backward + high punch
+        if (me.x < 250) then
+            result[backward] = true
+        else
+            result[forward] = true
+        end
+        result["Z"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:FlyingMare(me) -- AIR close
+    local result = {}
+    if self.i < 20 then  -- up
+        result["Up"] = true
+    elseif self.i > 20 and self.i < 24 then  -- down + medium/high punch
+        result["Down"] = true
+        -- result["Y"] = true -- medium
+        result["Z"] = true -- high
+    end
+    self.i = self.i + 1
+    return result
 end
 
 return Example
