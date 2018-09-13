@@ -6,22 +6,24 @@ local Example_mt = {__index = Example}
 local file
 
 local Attacks = {
-    JudoThrow=0,
-    DragonSuplex=1,
-    FlyingMare=2,
-    FlyingBusterDrop=3,
-    KneeBazooka=4,
-    ReverseSpinKick=5,
-    SpinningBackKnuckle=6,
-    SonicBoom=7,
-    SomersaultKick=8,
-    LowerPunch=9,
-    MiddlePunch=10,
-    HighPunch=11,
-    LowerKick=12,
-    MiddleKick=13,
-    HighKick=14
+    JudoThrow=1,
+    DragonSuplex=2,
+    FlyingMare=3,
+    FlyingBusterDrop=4,
+    KneeBazooka=5,
+    ReverseSpinKick=6,
+    SpinningBackKnuckle=7,
+    SonicBoom=8,
+    SomersaultKick=9,
+    LowerPunch=10,
+    MiddlePunch=11,
+    HighPunch=12,
+    LowerKick=13,
+    MiddleKick=14,
+    HighKick=15,
+    MoveToOpponent=16
 }
+
 
 ---------------------------------------------------------------------------------------------------
 -- SIMPLE environment
@@ -71,26 +73,25 @@ function Example.new(player)
    setmetatable(self, Example_mt)
 
    self.fktTable = {
-     {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent},
-     {name="Judo Throw",            isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.JudoThrow},
-     {name="Dragon Suplex",         isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.DragonSuplex},
+     {name="Judo Throw",            isMagic=false, maximalDistance=40, air=false,   close=true,  call=self.JudoThrow},
+     {name="Dragon Suplex",         isMagic=false, maximalDistance=40, air=false,   close=true,  call=self.DragonSuplex},
      {name="Flying Mare",           isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingMare},
      {name="Flying Buster Drop",    isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingBusterDrop},
      {name="Knee Bazooka",          isMagic=false, maximalDistance=1, air=false,   close=false, call=self.KneeBazooka},
-     {name="Reverse Spin Kick",     isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.ReverseSpinKick},
+     {name="Reverse Spin Kick",     isMagic=false, maximalDistance=60, air=false,   close=true,  call=self.ReverseSpinKick},
      {name="Spinning Back Knuckle", isMagic=false, maximalDistance=65, air=false,   close=false, call=self.SpinningBackKnuckle},
      {name="Sonic Boom",            isMagic=false, maximalDistance=300, air=false,   close=false, call=self.SonicBoom},
      {name="Somersault Kick",       isMagic=false, maximalDistance=75, air=false,   close=false, call=self.SomersaultKick},
-
      {name="Lower Punch",           isMagic=false, maximalDistance=55, air=false,   close=false, call=self.LowerPunch},
      {name="Middle Punch",          isMagic=false, maximalDistance=60, air=false,   close=false, call=self.MiddlePunch},
      {name="High Punch",            isMagic=false, maximalDistance=75, air=false,   close=false, call=self.HighPunch},
      {name="Lower Kick",            isMagic=false, maximalDistance=55, air=false,   close=false, call=self.LowerKick},
      {name="Middle Kick",           isMagic=false, maximalDistance=65, air=false,   close=false, call=self.MiddleKick},
-     {name="High Kick",             isMagic=false, maximalDistance=70, air=false,   close=false, call=self.HighKick}
+     {name="High Kick",             isMagic=false, maximalDistance=70, air=false,   close=false, call=self.HighKick},
+     {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent}
    }
 
-   self.currentStateIndex = 8
+   self.currentStateIndex = Attacks.MoveToOpponent
 
    return self
 end
@@ -152,10 +153,38 @@ function Example:performCurrentAction(me)
 
   -- called every frame
   if currentState ~= nil then
-    if self.currentStateIndex == 1 then
-      finished, result = self:MoveToOpponent(me)
-    elseif self.currentStateIndex == 8 then
-      finished, result = currentState.call(me)
+    if self.currentStateIndex == Attacks.JudoThrow then
+      finished, result = self:JudoThrow(me)
+    elseif self.currentStateIndex == Attacks.DragonSuplex then
+      finished, result = self:DragonSuplex(me)
+    elseif self.currentStateIndex == Attacks.FlyingMare then
+        finished, result = self:FlyingMare(me)
+    elseif self.currentStateIndex == Attacks.FlyingBusterDrop then
+        finished, result = self:FlyingBusterDrop(me)
+    elseif self.currentStateIndex == Attacks.KneeBazooka then
+        finished, result = self:KneeBazooka(me)
+    elseif self.currentStateIndex == Attacks.ReverseSpinKick then
+        finished, result = self:ReverseSpinKick(me)
+    elseif self.currentStateIndex == Attacks.SpinningBackKnuckle then
+        finished, result = self:SpinningBackKnuckle(me)
+    elseif self.currentStateIndex == Attacks.SonicBoom then
+        finished, result = self:SonicBoom(me)
+    elseif self.currentStateIndex == Attacks.SomersaultKick then
+        finished, result = self:SomersaultKick(me)
+    elseif self.currentStateIndex == Attacks.LowerPunch then
+        finished, result = self:LowerPunch(me)
+    elseif self.currentStateIndex == Attacks.MiddlePunch then
+        finished, result = self:MiddlePunch(me)
+    elseif self.currentStateIndex == Attacks.HighPunch then
+        finished, result = self:HighPunch(me)
+    elseif self.currentStateIndex == Attacks.LowerKick then
+        finished, result = self:LowerKick(me)
+    elseif self.currentStateIndex == Attacks.MiddleKick then
+        finished, result = self:MiddleKick(me)
+    elseif self.currentStateIndex == Attacks.HighKick then
+        finished, result = self:HighKick(me)
+    elseif self.currentStateIndex == Attacks.MoveToOpponent then
+        finished, result = self:MoveToOpponent(me)
     end
     
     if finished then
@@ -362,14 +391,14 @@ function Example:FlyingMare(me) -- AIR close
 end
 
 -- condition: "close" && "air"
-function Example:flyingBusterDrop(me)
+function Example:FlyingBusterDrop(me)
   local result = {}
   result["Down"] = true
   result["B"] = true
   return result
 end
 
-function Example:kneeBazooka(me)
+function Example:KneeBazooka(me)
   local result = {}
   result["Left"] = true --or Right
   result["B"] = true
@@ -377,7 +406,7 @@ function Example:kneeBazooka(me)
 end
 
 -- consition: "close"
-function Example:reverseSpinKick(me)
+function Example:ReverseSpinKick(me)
   local result = {}
   result["Left"] = true --or Right
   result["C"] = true
