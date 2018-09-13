@@ -21,7 +21,8 @@ local Attacks = {
     LowerKick=13,
     MiddleKick=14,
     HighKick=15,
-    MoveToOpponent=16
+    MoveToOpponent=16,
+    Delay=17
 }
 
 
@@ -101,7 +102,7 @@ function Example.new(player)
      {name="MoveToOpponent",        isMagic=false, maximalDistance=1, air=false,   close=false,  call=self.MoveToOpponent}
    }
 
-   self.currentStateIndex = Attacks.SonicBoom
+   self.currentStateIndex = Attacks.MiddlePunch
 
    SimpleReset()
 
@@ -149,6 +150,9 @@ function Example:log(me, enemy)
 	SimpleSchedule(1)
 end
 
+--
+-- advance
+--
 function Example:advance(me, enemy)
   self:log(me, enemy)
 
@@ -198,11 +202,17 @@ function Example:performCurrentAction(me)
         finished, result = self:HighKick(me)
     elseif self.currentStateIndex == Attacks.MoveToOpponent then
         finished, result = self:MoveToOpponent(me)
+    elseif self.currentStateIndex == Attacks.Delay then
+        finished, result = self:Delay(me)
+
+        if finished then
+          self.i = -1
+          return result
+        end
     end
     
     if finished then
-      self.i = 0
-      self.currentStateIndex = 0
+      self.i = -1
     end
   end
 
@@ -267,6 +277,15 @@ end
 
 
 -- NORMAL ATTACKS --
+
+function Example:Delay(me)
+  local result = {}
+  local finished = true
+  if self.i < 2 then
+      finished = false
+  end
+  return finished, result
+end
 
 function Example:LowerPunch(me)
     local result = {}
