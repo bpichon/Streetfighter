@@ -50,7 +50,8 @@ end
 -- send set signal command
 --
 function SimpleSetSignal(name, value)
-  --print(name, value)
+  
+  -- print(name, value)
 	lvalue = value
 
 	if value == true then
@@ -60,6 +61,10 @@ function SimpleSetSignal(name, value)
 	if value == false then
 		lvalue = 0
 	end
+
+  if value == nil then
+    lvalue = -1
+  end
 
   text = "param=" .. name .. "|param=" .. lvalue
 
@@ -103,6 +108,19 @@ function Example.new(player)
    }
 
    self.currentStateIndex = Attacks.MiddlePunch
+   self.currentActionsIndex = 1
+   self.actionArray = { Attacks.LowerPunch,
+                        Attacks.Delay,
+                        Attacks.MiddlePunch,
+                        Attacks.Delay,
+                        Attacks.HighPunch,
+                        Attacks.Delay,
+                        Attacks.LowerKick,
+                        Attacks.Delay,
+                        Attacks.MiddleKick,
+                        Attacks.Delay,
+                        Attacks.HighKick,
+                        Attacks.Delay  }
 
    SimpleReset()
 
@@ -146,7 +164,7 @@ function Example:log(me, enemy)
   SimpleSetSignal("enemy.remoteAttack", enemy["remoteAttack"])
   SimpleSetSignal("enemy.remoteAttackPos", enemy["remoteAttackPos"])
   SimpleSetSignal("enemy.dizzy", enemy["dizzy"])
-  SimpleSetSignal("currentStateIndex", self.currentStateIndex)
+  SimpleSetSignal("currentStateIndex", self.currentActionsIndex)
 	SimpleSchedule(1)
 end
 
@@ -156,16 +174,33 @@ end
 function Example:advance(me, enemy)
   self:log(me, enemy)
 
-  result = self:performCurrentAction(me)
+  result = self:performActions(me)
 
   self.i = self.i + 1
 
   return result
 end
 
-function Example:performCurrentAction(me)
+function Example:performActions(me)
+  local index = self.actionArray[self.currentActionsIndex]
+  local finished, result = self:performCurrentAction(index)
+
+  --print(index)
+  if finished then
+    self.currentActionsIndex = self.currentActionsIndex + 1
+
+    --if self.currentActionsIndex > table.getn(self.actionArray) then
+    --  self.actionArray= {}
+    --end
+  end
+
+  return result
+end
+
+function Example:performCurrentAction(currentActionIndex, me)
   local result = {}
 
+  self.currentStateIndex = currentActionIndex
   currentState = self.fktTable[self.currentStateIndex]
 
   -- called every frame
@@ -204,11 +239,6 @@ function Example:performCurrentAction(me)
         finished, result = self:MoveToOpponent(me)
     elseif self.currentStateIndex == Attacks.Delay then
         finished, result = self:Delay(me)
-
-        if finished then
-          self.i = -1
-          return result
-        end
     end
     
     if finished then
@@ -216,7 +246,7 @@ function Example:performCurrentAction(me)
     end
   end
 
-  return result
+  return finished, result
 end
 
 function Example:fighter()
@@ -281,7 +311,7 @@ end
 function Example:Delay(me)
   local result = {}
   local finished = true
-  if self.i < 2 then
+  if self.i < 40 then
       finished = false
   end
   return finished, result
