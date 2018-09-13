@@ -48,8 +48,29 @@ end
 function Example.new(player)
    local self = Player.new(player)
    file = io.open("c:\\temp\\streetfighter.txt", "a")
-   self.i = 0 
+   self.i = 0
    setmetatable(self, Example_mt)
+
+   self.fktTable = {
+     {name="Judo Throw",            isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.JudoThrow},
+     {name="Dragon Suplex",         isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.DragonSuplex},
+     {name="Flying Mare",           isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingMare},
+     {name="Flying Buster Drop",    isMagic=false, maximalDistance=1, air=true,    close=true,  call=self.FlyingBusterDrop},
+     {name="Knee Bazooka",          isMagic=false, maximalDistance=1, air=false,   close=false, call=self.KneeBazooka},
+     {name="Reverse Spin Kick",     isMagic=false, maximalDistance=1, air=false,   close=true,  call=self.ReverseSpinKick},
+     {name="Spinning Back Knuckle", isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SpinningBackKnuckle},
+     {name="Sonic Boom",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SonicBoom},
+     {name="Somersault Kick",       isMagic=false, maximalDistance=1, air=false,   close=false, call=self.SomersaultKick},
+
+     {name="Lower Punch",           isMagic=false, maximalDistance=1, air=false,   close=false, call=self.LowerPunch},
+     {name="Middle Punch",          isMagic=false, maximalDistance=1, air=false,   close=false, call=self.MiddlePunch},
+     {name="High Punch",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.HighPunch},
+     {name="Lower Kick",            isMagic=false, maximalDistance=1, air=false,   close=false, call=self.LowerKick},
+     {name="Middle Kick",           isMagic=false, maximalDistance=1, air=false,   close=false, call=self.MiddleKick},
+     {name="High Kick",             isMagic=false, maximalDistance=1, air=false,   close=false, call=self.HighKick}
+   }
+
+
    return self
 end
 
@@ -307,6 +328,5 @@ end
 function Example:CloseFile()
 	file:close()
 end
-
 
 return Example
