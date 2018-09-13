@@ -279,8 +279,19 @@ end
 
 function Example:getNextAttack(me, enemy)
     distance = self:distance(me, enemy)
+    crouching = enemy["crounching"]
+    jumping = enemy["jumping"]
+
+    if crouching and distance < 60 then
+      return Attacks.LowerKick
+    end
+
+    if jumping and distance < 70 then
+      return Attacks.HighKick
+    end
+
     if distance < 40 then
-        return Attacks.LowerKick
+        return Attacks.JudoThrow
     elseif distance < 60 then
         return Attacks.HighKick
     elseif distance < 75 then
