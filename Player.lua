@@ -45,6 +45,25 @@ function Example:startRound()
 end
 
 function Example:advance(me, enemy)
+	SimpleSetSignal("self.i", self.i)
+	SimpleSetSignal("me.x", me["x"])
+	SimpleSetSignal("me.y", me["y"])
+	SimpleSetSignal("me.distanceToOpponent", me["distanceToOpponent"])
+	SimpleSetSignal("me.crounching", me["crounching"])
+	SimpleSetSignal("me.jumping", me["jumping"])
+	SimpleSetSignal("me.facingRight", me["facingRight"])
+	SimpleSetSignal("me.advancing", me["advancing"])
+	SimpleSetSignal("me.goingBack", me["goingBack"])
+	SimpleSetSignal("enemy.x", enemy["x"])
+	SimpleSetSignal("enemy.y", enemy["y"])
+	SimpleSetSignal("enemy.distanceToOpponent", enemy["distanceToOpponent"])
+	SimpleSetSignal("enemy.crounching", enemy["crounching"])
+	SimpleSetSignal("enemy.jumping", enemy["jumping"])
+	SimpleSetSignal("enemy.facingRight", enemy["facingRight"])
+	SimpleSetSignal("enemy.advancing", enemy["advancing"])
+	SimpleSetSignal("enemy.goingBack", enemy["goingBack"])
+	SimpleSchedule(1)
+
   -- called every frame
     return me
 end
@@ -54,7 +73,7 @@ function Example:fighter()
 end
 
 function Example:name()
-	return "Conor McGregor"
+	return "Kimbo"
 end
 
 -- SPECIAL ATTACKS --
@@ -167,6 +186,10 @@ function Example:reverseSpinKick()
   result["Left"] = true --or Right
   result["C"] = true
   return result
+end
+
+function Example:CloseFile()
+	file:close()
 end
 
 
