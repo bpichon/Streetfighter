@@ -277,6 +277,18 @@ function Example:performActions(me)
   return false, result
 end
 
+function Example:getNextAttack(distance)
+    if distance < 40 then
+        return Attacks.JudoThrow
+    elseif distance < 60 then
+        return Attacks.ReverseSpinKick
+    elseif distance < 75 then
+        return Attacks.SomersaultKick
+    else
+        return Attacks.SonicBoom
+    end
+end
+
 function Example:performCurrentAction(currentActionIndex, me)
   local result = {}
 
