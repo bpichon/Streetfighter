@@ -88,6 +88,64 @@ function Example:name()
 	return "Kimbo"
 end
 
+
+-- NORMAL ATTACKS --
+
+function Example:LowerPunch(me)
+    local result = {}
+    if self.i < 2 then
+        result["X"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:MiddlePunch(me)
+    local result = {}
+    if self.i < 2 then
+        result["Y"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:HighPunch(me)
+    local result = {}
+    if self.i < 2 then
+        result["Z"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:LowerKick(me)
+    local result = {}
+    if self.i < 2 then
+        result["A"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:MiddleKick(me)
+    local result = {}
+    if self.i < 2 then
+        result["B"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+function Example:HighKick(me)
+    local result = {}
+    if self.i < 2 then
+        result["C"] = true
+    end
+    self.i = self.i + 1
+    return result
+end
+
+
 -- SPECIAL ATTACKS --
 
 function Example:SpinningBackKnuckle(me)
