@@ -77,27 +77,11 @@ function Example:advance(me, enemy)
 	SimpleSchedule(1)
 
   -- called every frame
+  if me["distanceToOpponent"] > 0 then
+      return self:moveForward(me)
+  end
 
-      -- called every frame
-    --if me["attacking"] == true then
-    --    self.i = 0
-    --    return {}
-    --end
-
-    --if self.i == 0 then
-    --    if enemy["attaking"] then
-    --    else
-    Debug.WriteLine(me.x)
-    Debug.WriteLine(me["distanceToOpponent"])
-    if me["distanceToOpponent"] > 0 then
-
-        return self:moveForward(me)
-    end
-    --    end
-    --end
-
-
-    return me
+  return me
 end
 
 function Example:fighter()
