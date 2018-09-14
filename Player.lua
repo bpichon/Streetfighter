@@ -90,13 +90,13 @@ end
 
 function Example:log(me, enemy)
   SimpleSetSignal("self.i", self.i)
-	SimpleSetSignal("me.x", me["x"])
-	SimpleSetSignal("me.y", me["y"])
-	SimpleSetSignal("me.distanceToOpponent", me["distanceToOpponent"])
-	SimpleSetSignal("me.crounching", me["crounching"])
-	SimpleSetSignal("me.jumping", me["jumping"])
-	SimpleSetSignal("me.facingRight", me["facingRight"])
-	SimpleSetSignal("me.advancing", me["advancing"])
+  SimpleSetSignal("me.x", me["x"])
+  SimpleSetSignal("me.y", me["y"])
+  SimpleSetSignal("me.distanceToOpponent", me["distanceToOpponent"])
+  SimpleSetSignal("me.crounching", me["crounching"])
+  SimpleSetSignal("me.jumping", me["jumping"])
+  SimpleSetSignal("me.facingRight", me["facingRight"])
+  SimpleSetSignal("me.advancing", me["advancing"])
   SimpleSetSignal("me.goingBack", me["goingBack"])
   SimpleSetSignal("me.attacking", me["attacking"])
   SimpleSetSignal("me.magic", me["magic"])
@@ -106,14 +106,14 @@ function Example:log(me, enemy)
   SimpleSetSignal("me.remoteAttack", me["remoteAttack"])
   SimpleSetSignal("me.remoteAttackPos", me["remoteAttackPos"])
   SimpleSetSignal("me.dizzy", me["dizzy"])
-	SimpleSetSignal("enemy.x", enemy["x"])
-	SimpleSetSignal("enemy.y", enemy["y"])
-	SimpleSetSignal("enemy.distanceToOpponent", enemy["distanceToOpponent"])
-	SimpleSetSignal("enemy.crounching", enemy["crounching"])
-	SimpleSetSignal("enemy.jumping", enemy["jumping"])
-	SimpleSetSignal("enemy.facingRight", enemy["facingRight"])
-	SimpleSetSignal("enemy.advancing", enemy["advancing"])
-	SimpleSetSignal("enemy.goingBack", enemy["goingBack"])
+  SimpleSetSignal("enemy.x", enemy["x"])
+  SimpleSetSignal("enemy.y", enemy["y"])
+  --SimpleSetSignal("enemy.distanceToOpponent", enemy["distanceToOpponent"])
+  SimpleSetSignal("enemy.crounching", enemy["crounching"])
+  SimpleSetSignal("enemy.jumping", enemy["jumping"])
+  SimpleSetSignal("enemy.facingRight", enemy["facingRight"])
+  SimpleSetSignal("enemy.advancing", enemy["advancing"])
+  SimpleSetSignal("enemy.goingBack", enemy["goingBack"])
   SimpleSetSignal("enemy.attacking", enemy["attacking"])
   SimpleSetSignal("enemy.magic", enemy["magic"])
   --SimpleSetSignal("enemy.attack", enemy["attak"])
@@ -121,9 +121,9 @@ function Example:log(me, enemy)
   SimpleSetSignal("enemy.blockOrHit", enemy["blockOrHit"])
   SimpleSetSignal("enemy.remoteAttack", enemy["remoteAttack"])
   SimpleSetSignal("enemy.remoteAttackPos", enemy["remoteAttackPos"])
-  SimpleSetSignal("enemy.dizzy",self:distance(me, enemy))
+  SimpleSetSignal("enemy.distanceToOpponent", self.actionArray[self.currentActionsIndex])
   SimpleSetSignal("currentStateIndex", self.currentState)
-	SimpleSchedule(1)
+  SimpleSchedule(1)
 end
 
 function Example.new(player)
@@ -256,6 +256,8 @@ function Example:advance(me, enemy)
   result = self:stateTransition(me, enemy)
   self.i = self.i + 1
 
+  Draw.DrawAtBottom("Current action:" .. self.actionArray[self.currentActionsIndex])
+
   --print(result)
   return result
 end
@@ -279,26 +281,54 @@ end
 
 function Example:getNextAttack(me, enemy)
     distance = self:distance(me, enemy)
-    crouching = enemy["crounching"]
-    jumping = enemy["jumping"]
+    enemy_crouching = enemy["crounching"]
+    enemy_jumping = enemy["jumping"]
+    enemy_dizzy = enemy["dizzy"]
+    me_jumping = me["jumping"]
+    enemy_remoteAttack = enemy["remoteAttack"]
+    enemy_attacking = enemy["attacking"]
 
-    if crouching and distance < 60 then
-      return Attacks.LowerKick
+    --[[
+    if enemy_remoteAttack then
+        return Attacks.MoveToOpponent
     end
 
-    if jumping and distance < 70 then
+    if me_jumping and distance <40 then
+        return Attacks.FlyingMare
+    end
+    --]]
+
+    if enemy_dizzy then
+        return Attacks.SonicBoom
+    end
+
+    if enemy_crouching then
+        if distance < 35 then
+            return Attacks.LowerKick
+        else 
+            return nil
+        end
+    end
+
+    if enemy_jumping and me_jumping and distance < 20 then
+        return Attacks.MiddlePunch
+    end
+
+    if enemy_jumping and distance < 30 then
       return Attacks.HighKick
     end
 
-    if distance < 40 then
+    if distance < 15 then
         return Attacks.JudoThrow
-    elseif distance < 60 then
-        return Attacks.HighKick
-    elseif distance < 75 then
+    elseif distance < 25 then
+        return Attacks.SpinningBackKnuckle
+    elseif distance < 30 then
+        return Attacks.MiddlePunch
+    elseif distance < 55 then
         return Attacks.SomersaultKick
-    else
-        return nil
     end
+
+    return nil
 end
 
 function Example:performCurrentAction(currentActionIndex, me)
@@ -367,11 +397,14 @@ end
 -- DISTANCE --
 
 function Example:distance(me, enemy)
+    return me["distanceToOpponent"]
+    --[[
     if me["facingRight"] then
         return  enemy["x"] - me["x"]
     else
         return me["x"] - enemy["x"]
     end
+    --]]
 end
 
 -- MOVE --
@@ -405,7 +438,7 @@ end
 function Example:MoveToOpponent(me)
   local result = {}
   --print("move to opp")
-  if me["distanceToOpponent"] >= 40 then
+  if me["distanceToOpponent"] >= 15 then
     result[self:forward(me)] = true
     result["Up"] = true
     return false, result
