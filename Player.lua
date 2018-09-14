@@ -462,7 +462,7 @@ end
 function Example:Delay(me)
   local result = {}
   local finished = true
-  if self.i < 10 then
+  if me["attacking"] or self.i < 10 then
       finished = false
   end
   return finished, result
@@ -542,11 +542,6 @@ function Example:SpinningBackKnuckle(me)
 	local forward = self:forward(me)
     local finished = false
 
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
-
 	if self.i < 2 then
 		result[forward] = true
 	elseif self.i < 4 then
@@ -562,11 +557,6 @@ function Example:SonicBoom(me)
 	local forward = self:forward(me)
 	local backward = self:backward(me)
     local finished = false
-
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
 
 	if self.i < 65 then
         result[backward] = true
@@ -585,11 +575,6 @@ function Example:SomersaultKick(me)
     local forward = self:forward(me)
     local finished = false
 
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
-
     if self.i < 2 then
       result["Down"] = true
     elseif self.i < 4 then
@@ -606,11 +591,6 @@ function Example:JudoThrow(me) -- close
     local forward = self:forward(me)
     local backward = self:backward(me)
     local finished = false
-
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
 
     if self.i < 2 then  -- forward/backward + medium punch
         if (me.x < 250) then
@@ -631,11 +611,6 @@ function Example:DragonSuplex(me) -- close
     local backward = self:backward(me)
     local finished = false
 
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
-
     if self.i < 2 then  -- forward/backward + high punch
         if (me.x < 250) then
             result[backward] = true
@@ -652,11 +627,6 @@ end
 function Example:FlyingMare(me) -- AIR close
     local result = {}
     local finished = false
-
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
 
     if self.i < 20 then  -- up
         result["Up"] = true
@@ -675,11 +645,6 @@ function Example:FlyingBusterDrop(me)
     local result = {}
     local finished = false
 
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
-
     if self.i < 2 then
       result["Down"] = true
       result["B"] = true
@@ -692,11 +657,6 @@ end
 function Example:KneeBazooka(me)
     local result = {}
     local finished = false
-
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
 
     if self.i < 2 then
         result["Left"] = true --or Right
@@ -711,11 +671,6 @@ end
 function Example:ReverseSpinKick(me)
     local result = {}
     local finished = false
-
-    if me["attacking"] then
-        result["Down"] = true
-        return false, {}
-    end
 
     if self.i < 2 then
         result["Left"] = true --or Right
