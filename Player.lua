@@ -23,7 +23,9 @@ local Attacks = {
     HighKick=15,
     MoveToOpponent=16,
     MoveFromOpponent=17,
-    Delay=18
+    Delay=18,
+    Crouch=19,
+    Block=20
 }
 
 local States = {
@@ -373,6 +375,10 @@ function Example:performCurrentAction(currentActionIndex, me)
       finished, result = self:MoveFromOpponent(me)
   elseif self.currentStateIndex == Attacks.Delay then
       finished, result = self:Delay(me)
+  elseif self.currentStateIndex == Attacks.Crouch then
+      finished, result = self:Crouch(me)
+  elseif self.currentStateIndex == Attacks.Block then
+      finished, result = self:Block(me)
   end
   
   if finished then
@@ -456,6 +462,24 @@ function Example:MoveFromOpponent(me)
   return true, result
 end
 
+function Example:Crouch(me)
+  local result = {}
+  if self.i < 60 then
+    result["Down"] = true
+    return false, result
+  end
+  return true, result
+end
+
+function Example:Block(me)
+    local backward = self:backward(me)
+    local result = {}
+    if self.i < 60 then
+        result[backward] = true
+        return false, result
+    end
+    return true, result
+end
 
 -- NORMAL ATTACKS --
 
